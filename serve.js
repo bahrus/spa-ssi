@@ -5,6 +5,7 @@ import http from "http";
 import fs from "fs/promises";
 import path from "path";
 import url from "url";
+import net from "net";
 
 class SimpleHTTPRequestHandler {
   constructor(rootDir = process.cwd(), port = 8000) {
@@ -107,6 +108,34 @@ class SimpleHTTPRequestHandler {
 }
 
 /**
+ * 
+ * @param {number} startingAt 
+ * @returns 
+ */
+function getAvailablePort(startingAt) {
+    /**
+     * 
+     * @param {number} currentPort 
+     * @param {(value: any) => void} cb 
+     */
+    function getNextAvailablePort(currentPort, cb) {
+        const server = net.createServer();
+        server.listen(currentPort, () => {
+            server.once('close', () => {
+                cb(currentPort);
+            });
+            server.close();
+        });
+        server.on('error', _ => {
+            getNextAvailablePort(++currentPort, cb);
+        });
+    }
+    return new Promise(resolve => {
+        getNextAvailablePort(startingAt, resolve);
+    });
+}
+
+/**
  * @type {{[key: string]: string}}
  */
 const types = {
@@ -125,7 +154,7 @@ const types = {
 
 // Run if executed directly
 if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
-  const port = process.env.PORT || 8000;
+  const port = await getAvailablePort(Number(process.env.PORT) || 8000);
   const server = new SimpleHTTPRequestHandler(process.cwd(), port);
   server.serve();
 }
