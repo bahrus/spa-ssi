@@ -30,6 +30,13 @@ class SimpleHTTPRequestHandler {
   async handleRequest(req, res) {
     try {
       const parsedUrl = url.parse(req.url);
+      if(parsedUrl.pathname === '/siteMap'){
+        const siteMapContent = await this.renderSiteMap();
+          // Send response
+        res.writeHead(200, { "Content-Type": 'text/html' });
+        res.end(siteMapContent);
+        return;
+      }
       let pathname = decodeURIComponent(parsedUrl.pathname);
 
       // Normalize path to prevent directory traversal
@@ -109,6 +116,67 @@ class SimpleHTTPRequestHandler {
     } catch {
       return path.basename(filePath);
     }
+  }
+
+  /**
+   * Build HTML list
+   * @param {string[]} files 
+   * @param {string} baseDir 
+   */
+  buildHtmlList(files, baseDir) {
+    /**
+     * @type {any}
+     */
+    const tree = {};
+
+    // Build nested structure
+    for (const file of files) {
+      const relativePath = path.relative(baseDir, file);
+      const parts = relativePath.split(path.sep);
+      let current = tree;
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (i === parts.length - 1) {
+          current[part] = file; // Leaf node: file path
+        } else {
+          current[part] = current[part] || {};
+          current = current[part];
+        }
+      }
+    }
+    return this.renderTree(tree, baseDir);
+  }
+
+  // Render HTML
+  /**
+   * 
+   * @param {any} node 
+   * @param {string} baseDir
+   * @returns 
+   */
+  async renderTree(node, baseDir) {
+    let html = '<ul>';
+    for (const key in node) {
+      const value = node[key];
+      if (typeof value === 'string') {
+        const title = await this.extractTitle(value);
+        const href = path.relative(baseDir, value).replace(/\\/g, '/');
+        html += `<li><a href="${href}">${title}</a></li>`;
+      } else {
+        html += `<li>${key}${await this.renderTree(value, baseDir)}</li>`;
+      }
+    }
+    html += '</ul>';
+    return html;
+  }
+
+  async renderSiteMap(){
+    // Run it
+    const baseDir = process.cwd();
+    const htmlFiles = await this.findHtmlFiles(baseDir);
+    const htmlOutput = this.buildHtmlList(htmlFiles, baseDir);
+    return htmlOutput;
   }
 
   /**
