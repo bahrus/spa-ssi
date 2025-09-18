@@ -57,7 +57,7 @@ or:
 
 
 
-## Directory Listing support [TODO]
+## Directory Listing support
 
 /sitemap lists all the html links within the site.
 

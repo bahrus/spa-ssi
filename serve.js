@@ -30,7 +30,7 @@ class SimpleHTTPRequestHandler {
   async handleRequest(req, res) {
     try {
       const parsedUrl = url.parse(req.url);
-      if(parsedUrl.pathname === '/siteMap'){
+      if(parsedUrl.pathname?.toLowerCase() === '/sitemap'){
         const siteMapContent = await this.renderSiteMap();
           // Send response
         res.writeHead(200, { "Content-Type": 'text/html' });
