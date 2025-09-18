@@ -41,3 +41,7 @@ Add this to index.html:
 </script>
 ```
 
+## Directory Listing support [TODO]
+
+/sitemap lists all the html links within the site.
+
