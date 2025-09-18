@@ -29,3 +29,15 @@ Single Page App / Server Side Include Simple File Web Server
 
 If a page request doesn't resolve to a file, it defaults to /index.html
 
+## HMR Support
+
+Add this to index.html:
+
+```html
+<script>
+    window.addEventListener("focus", () => {
+        location.reload();
+    });
+</script>
+```
+
