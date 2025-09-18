@@ -1,0 +1,24 @@
+{
+  "name": "spa-ssi",
+  "version": "0.0.0",
+  "description": "Single Page App / Server Side Include Simple File Web Server",
+  "keywords": [
+    "single-page-app",
+    "server-side-includes"
+  ],
+  "homepage": "https://github.com/bahrus/spa-ssi#readme",
+  "bugs": {
+    "url": "https://github.com/bahrus/spa-ssi/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahrus/spa-ssi.git"
+  },
+  "license": "MIT",
+  "author": "Bruce B Anderson <anderson.bruce.b@gmail.com>",
+  "type": "module",
+  "main": "serve.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
