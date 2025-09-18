@@ -1,0 +1,131 @@
+//@ts-check
+
+// simple_http_server.js
+import http from "http";
+import fs from "fs/promises";
+import path from "path";
+import url from "url";
+
+class SimpleHTTPRequestHandler {
+  constructor(rootDir = process.cwd(), port = 8000) {
+    this.rootDir = rootDir;
+    this.port = port;
+    this.server = http.createServer(this.handleRequest.bind(this));
+  }
+
+  // Start the server
+  serve() {
+    this.server.listen(this.port, () => {
+      console.log(`Serving HTTP on 0.0.0.0 port ${this.port} (http://localhost:${this.port}/)`);
+    });
+  }
+
+  // Main request handler
+  /**
+   * 
+   * @param {Request} req 
+   * @param {http.ServerResponse} res 
+   */
+  async handleRequest(req, res) {
+    try {
+      const parsedUrl = url.parse(req.url);
+      let pathname = decodeURIComponent(parsedUrl.pathname);
+
+      // Normalize path to prevent directory traversal
+      pathname = path.normalize(pathname).replace(/^(\.\.[/\\])+/, "");
+      let filepath = path.join(this.rootDir, pathname);
+
+      // If directory, append index.html
+      let stat;
+      try {
+        stat = await fs.stat(filepath);
+        if (stat.isDirectory()) {
+          filepath = path.join(this.rootDir, '/index.html'); //path.join(filepath, "index.html");
+          stat = await fs.stat(filepath);
+        }
+      } catch {
+        stat = null;
+      }
+
+      // If requested .html doesn't exist → fallback to root index.html (SPA mode)
+      if ((!stat || !stat.isFile()) && pathname.endsWith(".html")) {
+        filepath = path.join(this.rootDir, "index.html");
+      }
+
+      // Read file
+      const ext = path.extname(filepath).toLowerCase();
+      let content = await fs.readFile(filepath);
+
+      // SSI processing for HTML
+      if (ext === ".html") {
+        content = await this.processIncludes(content.toString(), path.dirname(filepath));
+        content = Buffer.from(content);
+      }
+
+      // Send response
+      res.writeHead(200, { "Content-Type": this.getMimeType(ext) });
+      res.end(content);
+
+    } catch (err) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("404 Not Found\n");
+    }
+  }
+
+  /**
+   * Process SSI includes
+   * @param {string} html 
+   * @param {*} currentDir 
+   * @returns 
+   */
+  async processIncludes(html, currentDir) {
+    const includeRegex = /<!--\s*#include\s+virtual="([^"]+)"\s*-->/g;
+
+    const tasks = [];
+    let match;
+    while ((match = includeRegex.exec(html)) !== null) {
+      const includePath = path.join(currentDir, match[1]);
+      const content = await fs.readFile(includePath, 'utf8');
+      html = html.replace(match[0], content);
+
+    }
+
+
+    return html;
+  }
+
+ 
+  /**
+   * Basic MIME type mapping
+   * @param {string} ext 
+   * @returns 
+   */
+  getMimeType(ext) {
+
+    return types[ext] || "application/octet-stream";
+  }
+}
+
+/**
+ * @type {{[key: string]: string}}
+ */
+const types = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "application/javascript",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".txt": "text/plain",
+};
+
+// Run if executed directly
+if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
+  const port = process.env.PORT || 8000;
+  const server = new SimpleHTTPRequestHandler(process.cwd(), port);
+  server.serve();
+}
