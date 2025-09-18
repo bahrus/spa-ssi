@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>on input</title>
+    <!-- #include virtual="/imports.html" -->
+</head>
+<body>
+    <fieldset disabled>
+        <label>
+            LHS: <input data-id={{lhs}}>
+        </label>
+        
+        <label>
+            RHS: <input data-id={{rhs}}>
+        </label>
+        
+        <template -id 
+            defer-🎚️
+            🎚️="on based on #{{lhs}} and #{{rhs}}."
+            🎚️-js='f.lhs.length === f.rhs.length'
+            >
+            <div>LHS.length === RHS.length</div>
+        </template>
+    </fieldset>
+ 
+
+
+    <script type=module>
+        import '/🎚️.js';
+    </script>
+</body>
+</html>

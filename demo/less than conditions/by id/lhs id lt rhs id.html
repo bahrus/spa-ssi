@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lhs id lt rhs id</title>
+    <!-- #include virtual="/imports.html" -->
+</head>
+<body>
+    <label for=lhs>
+        LHS: <input type=number id=lhs>
+    </label>
+    
+    <label for=rhs>
+        RHS: <input type=number id=rhs>
+    </label>
+    
+    <template 🎚️='on when #lhs lt #rhs.'>
+        <div>LHS &lt; RHS</div>
+    </template>
+
+
+    <script type=module>
+        import '/🎚️.js';
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>on input</title>
+    <!-- #include virtual="/imports.html" -->
+</head>
+<body>
+    <script type=module>
+        import {register} from '/🎚️.js';
+        register('isEqual', e => e.r = e.f.lhs === e.f.rhs)
+    </script>
+
+    <label>
+        LHS: <input data-id={{lhs}}>
+    </label>
+    
+    <label for=rhs>
+        RHS: <input data-id={{rhs}}>
+    </label>
+    
+    <template -id defer-🎚️ 🎚️='on if isEqual, based on #{{lhs}} and #{{rhs}}.'>
+        <div>LHS === RHS</div>
+    </template>
+
+
+
+    <script type=module>
+        import '/🎚️.js';
+    </script>
+</body>
+</html>

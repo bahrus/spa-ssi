@@ -76,7 +76,7 @@ class SimpleHTTPRequestHandler {
 
     } catch (err) {
       res.writeHead(404, { "Content-Type": "text/plain" });
-      res.end("404 Not Found\n");
+      res.end(`404 Not Found: ${JSON.stringify(err, null, 2)} \n`);
     }
   }
 
@@ -191,7 +191,8 @@ class SimpleHTTPRequestHandler {
     const tasks = [];
     let match;
     while ((match = includeRegex.exec(html)) !== null) {
-      const includePath = path.join(currentDir, match[1]);
+      const includeString = match[1];
+      const includePath = includeString.startsWith('/') ? path.join(process.cwd(), includeString) :  path.join(currentDir, includeString);
       const content = await fs.readFile(includePath, 'utf8');
       html = html.replace(match[0], content);
 
