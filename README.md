@@ -31,15 +31,31 @@ If a page request doesn't resolve to a file, it defaults to /index.html
 
 ## HMR Support
 
+Okay, it isn't true HMR, but in my experience it is as good as.
+
 Add this to index.html:
 
 ```html
 <script>
-    window.addEventListener("focus", () => {
-        location.reload();
-    });
+    const localhosts = ['localhost', '127.0.0.1', '[::1]'];
+    const {hostname} = location;
+    if(localhosts.includes(hostname)){
+        window.addEventListener("focus", () => {
+            location.reload();
+        });
+    }
 </script>
 ```
+
+or:
+
+```html
+<script type=module>
+    import 'spa-ssi/hmr.js';
+</script>
+```
+
+
 
 ## Directory Listing support [TODO]
 
