@@ -74,6 +74,44 @@ class SimpleHTTPRequestHandler {
   }
 
   /**
+   * Recursively find all .html files
+   * @param {*} dir 
+   * @returns 
+   */
+  async findHtmlFiles(dir) {
+    /** @type {string[]} */
+    const results = [];
+    const dirEntris = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of dirEntris) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        const subFiles = await this.findHtmlFiles(fullPath);
+        results.push(...subFiles);
+      } else if (entry.isFile() && entry.name.endsWith('.html')) {
+        results.push(fullPath);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Extract <title> from HTML file
+   * @param {string} filePath 
+   * @returns 
+   */
+  async extractTitle(filePath) {
+    try {
+      const content = await fs.readFile(filePath, 'utf8');
+      const match = content.match(/<title>(.*?)<\/title>/i);
+      return match ? match[1] : path.basename(filePath);
+    } catch {
+      return path.basename(filePath);
+    }
+  }
+
+  /**
    * Process SSI includes
    * @param {string} html 
    * @param {*} currentDir 
@@ -95,7 +133,7 @@ class SimpleHTTPRequestHandler {
     return html;
   }
 
- 
+
   /**
    * Basic MIME type mapping
    * @param {string} ext 
@@ -113,26 +151,26 @@ class SimpleHTTPRequestHandler {
  * @returns 
  */
 function getAvailablePort(startingAt) {
-    /**
-     * 
-     * @param {number} currentPort 
-     * @param {(value: any) => void} cb 
-     */
-    function getNextAvailablePort(currentPort, cb) {
-        const server = net.createServer();
-        server.listen(currentPort, () => {
-            server.once('close', () => {
-                cb(currentPort);
-            });
-            server.close();
-        });
-        server.on('error', _ => {
-            getNextAvailablePort(++currentPort, cb);
-        });
-    }
-    return new Promise(resolve => {
-        getNextAvailablePort(startingAt, resolve);
+  /**
+   * 
+   * @param {number} currentPort 
+   * @param {(value: any) => void} cb 
+   */
+  function getNextAvailablePort(currentPort, cb) {
+    const server = net.createServer();
+    server.listen(currentPort, () => {
+      server.once('close', () => {
+        cb(currentPort);
+      });
+      server.close();
     });
+    server.on('error', _ => {
+      getNextAvailablePort(++currentPort, cb);
+    });
+  }
+  return new Promise(resolve => {
+    getNextAvailablePort(startingAt, resolve);
+  });
 }
 
 /**
