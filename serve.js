@@ -168,9 +168,16 @@ class SimpleHTTPRequestHandler {
       if (typeof value === 'string') {
         const title = await this.extractTitle(value);
         const href = path.relative(baseDir, value).replace(/\\/g, '/');
-        html += `<li><a href="${href}">${title}</a></li>`;
+        html += String.raw `<li><a href="${href}">${title}</a></li>`;
       } else {
-        html += `<li>${key}${await this.renderTree(value, baseDir)}</li>`;
+        html += String.raw`
+        <li>
+          <details>
+            <summary>${key}</summary>
+            ${await this.renderTree(value, baseDir)}
+          </details>
+        </li>
+        `;
       }
     }
     html += '</ul>';
