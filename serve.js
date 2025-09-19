@@ -175,6 +175,7 @@ class SimpleHTTPRequestHandler {
         const href = path.relative(baseDir, value).replace(/\\/g, '/');
         html += String.raw `<li><a href="${href}">${title}</a></li>`;
       } else {
+        if(key === 'node_modules') continue;
         html += String.raw`
         <li>
           <details>
