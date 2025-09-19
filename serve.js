@@ -197,7 +197,17 @@ class SimpleHTTPRequestHandler {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Site Map</title>
         <style>
+          @import "https://unpkg.com/open-props";
 
+          /* optional imports that use the props */
+          @import "https://unpkg.com/open-props/normalize.min.css";
+          @import "https://unpkg.com/open-props/buttons.min.css";
+
+          /* just dark or light themes */
+          @import "https://unpkg.com/open-props/normalize.dark.min.css";
+          @import "https://unpkg.com/open-props/buttons.dark.min.css";
+          @import "https://unpkg.com/open-props/normalize.light.min.css";
+          @import "https://unpkg.com/open-props/buttons.light.min.css";
           @media (prefers-color-scheme: light) {
             /* Styles for light mode */
             body {
@@ -219,6 +229,10 @@ class SimpleHTTPRequestHandler {
 
           ul{
             list-style-type: none; /* Removes bullets */
+          }
+
+          a {
+            color: hotpink;
           }
         </style>
       </head>
