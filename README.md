@@ -5,11 +5,17 @@ Single Page App / Server Side Include Simple File Web Server
 ## To run
 
 1.  Install node.js
-2.  From a terminal, run:  
-> node serve.js 
+2.  From a terminal, run: 
+
+\> node serve.js 
+
 3.  From another package:
-> npm install spa-ssi
-> node ./node_modules/spa-ssi/serve.js
+
+\> npm install -d spa-ssi
+
+\> node ./node_modules/spa-ssi/serve.js
+
+4. Open http://localhost:8000
 
 ## Support for server-side includes:
 
@@ -51,13 +57,29 @@ or:
 
 ```html
 <script type=module>
+    import '/node_modules/spa-ssi/hmr.js';
+</script>
+```
+
+or:
+
+```html
+<script type=importmap >
+    {
+        "imports": {
+            ...
+            "spa-ssi/": "/node_modules/spa-ssi/",
+            ...
+        }
+    }
+</script>
+<script type=module>
     import 'spa-ssi/hmr.js';
 </script>
 ```
 
 
-
 ## Directory Listing support
 
-/sitemap lists all the html links within the site.
+http://locahost:8000/sitemap lists all the html links within the site.
 
