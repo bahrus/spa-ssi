@@ -48,15 +48,20 @@ class SimpleHTTPRequestHandler {
       try {
         stat = await fs.stat(filepath);
         if (stat.isDirectory()) {
+          throw 'DoIndex';
+          
+        }
+      } catch(e) {
+        try{
           filepath = path.join(this.rootDir, '/index.html'); //path.join(filepath, "index.html");
           stat = await fs.stat(filepath);
+        }catch(e2){
+          const siteMapContent = await this.renderSiteMap();
+          // Send response
+          res.writeHead(200, { "Content-Type": 'text/html' });
+          res.end(siteMapContent);
+          return;
         }
-      } catch {
-        const siteMapContent = await this.renderSiteMap();
-        // Send response
-        res.writeHead(200, { "Content-Type": 'text/html' });
-        res.end(siteMapContent);
-        return;
       }
 
       // If requested .html doesn't exist → fallback to root index.html (SPA mode)
