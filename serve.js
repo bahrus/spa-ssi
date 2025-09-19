@@ -188,8 +188,46 @@ class SimpleHTTPRequestHandler {
     // Run it
     const baseDir = process.cwd();
     const htmlFiles = await this.findHtmlFiles(baseDir);
-    const htmlOutput = this.buildHtmlList(htmlFiles, baseDir);
-    return htmlOutput;
+    const htmlOutput = await this.buildHtmlList(htmlFiles, baseDir);
+    const fullHTMLOutput = String.raw `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Site Map</title>
+        <style>
+
+          @media (prefers-color-scheme: light) {
+            /* Styles for light mode */
+            body {
+              background: #ffffff;
+              color: #000000;
+            }
+
+          }
+
+          @media (prefers-color-scheme: dark) {
+            /* Styles for dark mode */
+            body {
+              background: #000000;
+              color: #ffffff;
+            }
+
+
+          }
+
+          ul{
+            list-style-type: none; /* Removes bullets */
+          }
+        </style>
+      </head>
+      <body>
+      ${htmlOutput}
+      </body>
+    </html>
+    `;
+    return fullHTMLOutput;
   }
 
   /**
