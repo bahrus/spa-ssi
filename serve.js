@@ -231,6 +231,14 @@ class SimpleHTTPRequestHandler {
             list-style-type: none; /* Removes bullets */
           }
 
+          li {
+            max-inline-size: 100%;
+          }
+
+          summary{
+            color: black;
+          }
+
           a {
             color: hotpink;
           }
