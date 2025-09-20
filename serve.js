@@ -52,6 +52,17 @@ class SimpleHTTPRequestHandler {
           
         }
       } catch(e) {
+        if(!filepath.endsWith(".html")){
+          for(const key in types){
+            if(filepath.endsWith(key)){
+              res.writeHead(404, { "Content-Type": "text/plain" });
+              res.statusCode = 404;
+              res.end(`404 Not Found: ${filepath} \n`);
+              return;
+            }
+          }
+
+        }
         try{
           filepath = path.join(this.rootDir, '/index.html'); //path.join(filepath, "index.html");
           stat = await fs.stat(filepath);
