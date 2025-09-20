@@ -66,9 +66,16 @@ class SimpleHTTPRequestHandler {
 
       // If requested .html doesn't exist → fallback to root index.html (SPA mode)
       if ((!stat || !stat.isFile()) && pathname.endsWith(".html")) {
+        if(pathname.endsWith(".html")){
+          filepath = path.join(this.rootDir, "index.html");
+        }else{
+          res.writeHead(404, { "Content-Type": "text/plain" });
+          res.statusCode = 404;
+          res.end(`404 Not Found: ${filepath} \n`);
+          return;
+        }
         
         
-        filepath = path.join(this.rootDir, "index.html");
       }
 
       // Read file
@@ -86,6 +93,7 @@ class SimpleHTTPRequestHandler {
       res.end(content);
 
     } catch (err) {
+      res.statusCode = 404;
       res.writeHead(404, { "Content-Type": "text/plain" });
       res.end(`404 Not Found: ${JSON.stringify(err, null, 2)} \n`);
     }
