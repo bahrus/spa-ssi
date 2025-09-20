@@ -239,6 +239,7 @@ class SimpleHTTPRequestHandler {
 
           li {
             max-inline-size: 100%;
+            padding-inline-end: 48px;
           }
 
           summary{
