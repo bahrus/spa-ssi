@@ -1,6 +1,6 @@
 {
   "name": "spa-ssi",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Single Page App / Server Side Include Simple File Web Server",
   "keywords": [
     "single-page-app",
