@@ -293,9 +293,9 @@ class SimpleHTTPRequestHandler {
       const includeString = match[1];
       if(includeString.endsWith('.mjs')){
         // Dynamic import
-        const resolvedFilePath = path.join(process.cwd(), includeString);
-        console.log(`Including JS module: ${resolvedFilePath}`);
-        const test = await import(`./${resolvedFilePath}`);
+        //const resolvedFilePath = path.join(process.cwd(), includeString);
+        //console.log(`Including JS module: ${resolvedFilePath}`);
+        const test = await import(includeString);
         if(test.render && typeof test.render === 'function'){
           const renderedContent = test.render();
           html = html.replace(match[0], renderedContent);
@@ -361,6 +361,7 @@ const types = {
   ".html": "text/html",
   ".css": "text/css",
   ".js": "application/javascript",
+  ".mjs": "application/javascript",
   ".json": "application/json",
   ".png": "image/png",
   ".jpg": "image/jpeg",
