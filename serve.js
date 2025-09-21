@@ -291,9 +291,20 @@ class SimpleHTTPRequestHandler {
     let match;
     while ((match = includeRegex.exec(html)) !== null) {
       const includeString = match[1];
-      const includePath = includeString.startsWith('/') ? path.join(process.cwd(), includeString) :  path.join(currentDir, includeString);
-      const content = await fs.readFile(includePath, 'utf8');
-      html = html.replace(match[0], content);
+      if(includeString.endsWith('.js')){
+        // Dynamic import
+        const test = await import(`./${includeString}`);
+        if(test.render && typeof test.render === 'function'){
+          const renderedContent = test.render();
+          html = html.replace(match[0], renderedContent);
+          continue;
+        }
+      }else{
+        const includePath = includeString.startsWith('/') ? path.join(process.cwd(), includeString) :  path.join(currentDir, includeString);
+        const content = await fs.readFile(includePath, 'utf8');
+        html = html.replace(match[0], content);
+      }
+      
 
     }
 
