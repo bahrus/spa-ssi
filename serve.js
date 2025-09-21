@@ -291,21 +291,20 @@ class SimpleHTTPRequestHandler {
     let match;
     while ((match = includeRegex.exec(html)) !== null) {
       const includeString = match[1];
-      if(includeString.endsWith('.mjs')){
-        // Dynamic import
-        //const resolvedFilePath = path.join(process.cwd(), includeString);
-        //console.log(`Including JS module: ${resolvedFilePath}`);
-        const test = await import(includeString);
-        if(test.render && typeof test.render === 'function'){
-          const renderedContent = test.render();
-          html = html.replace(match[0], renderedContent);
-          continue;
-        }
-      }else{
-        const includePath = includeString.startsWith('/') ? path.join(process.cwd(), includeString) :  path.join(currentDir, includeString);
-        const content = await fs.readFile(includePath, 'utf8');
-        html = html.replace(match[0], content);
+      try{
+          const includePath = includeString.startsWith('/') ? path.join(process.cwd(), includeString) :  path.join(currentDir, includeString);
+          const content = await fs.readFile(includePath, 'utf8');
+          html = html.replace(match[0], content);
+      }catch(e){
+          const includeMJSPath = `../../${includeString.replace('.html', '.mjs')}`;
+          const test = await import(includeMJSPath);
+          if(test.render && typeof test.render === 'function'){
+            const renderedContent = test.render();
+            html = html.replace(match[0], renderedContent);
+            continue;
+          }
       }
+      
       
 
     }
