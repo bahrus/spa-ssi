@@ -33,17 +33,7 @@ Single Page App / Server Side Include Simple File Web Server
 
 ## Support for server-side js includes:
 
-```html
-<!doctype html>
-<html>
-  <head>
-    <title>Test of JS Include</title>
-  </head>
-  <body>
-    <!--#include virtual="about.mjs"-->
-  </body>
-</html>
-```
+In the example above, if "about.html" is not found, it tries "about.mjs" from the root folder of the web site.
 
 The assumption is that such files have an export function called "render".
 
