@@ -17,7 +17,7 @@ Single Page App / Server Side Include Simple File Web Server
 
 4. Open http://localhost:8000
 
-## Support for server-side includes:
+## Support for server-side html includes:
 
 ```html
 <!doctype html>
@@ -30,6 +30,22 @@ Single Page App / Server Side Include Simple File Web Server
   </body>
 </html>
 ```
+
+## Support for server-side js includes:
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Test of JS Include</title>
+  </head>
+  <body>
+    <!--#include virtual="about.mjs"-->
+  </body>
+</html>
+```
+
+The assumption is that such files have an export function called "render".
 
 ## Support for SPA
 

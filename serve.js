@@ -291,7 +291,7 @@ class SimpleHTTPRequestHandler {
     let match;
     while ((match = includeRegex.exec(html)) !== null) {
       const includeString = match[1];
-      if(includeString.endsWith('.js')){
+      if(includeString.endsWith('.mjs')){
         // Dynamic import
         const test = await import(`./${includeString}`);
         if(test.render && typeof test.render === 'function'){
