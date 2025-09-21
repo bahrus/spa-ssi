@@ -293,7 +293,9 @@ class SimpleHTTPRequestHandler {
       const includeString = match[1];
       if(includeString.endsWith('.mjs')){
         // Dynamic import
-        const test = await import(`./${includeString}`);
+        const resolvedFilePath = path.join(process.cwd(), includeString);
+        console.log(`Including JS module: ${resolvedFilePath}`);
+        const test = await import(`./${resolvedFilePath}`);
         if(test.render && typeof test.render === 'function'){
           const renderedContent = test.render();
           html = html.replace(match[0], renderedContent);
