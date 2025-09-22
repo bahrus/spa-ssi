@@ -37,6 +37,18 @@ class SimpleHTTPRequestHandler {
         res.end(siteMapContent);
         return;
       }
+      //for now, assume all mjs comes from root directory
+      if(parsedUrl.pathname?.endsWith('.mjs')){
+          const includeMJSPath = `../../${parsedUrl.pathname}`;
+          const test = await import(includeMJSPath);
+          if(test.render && typeof test.render === 'function'){
+            const renderedContent = test.render();
+            res.writeHead(200, { "Content-Type": 'text/html' });
+            res.end(renderedContent);
+            return;
+          }
+      }
+
       let pathname = decodeURIComponent(parsedUrl.pathname);
 
       // Normalize path to prevent directory traversal
@@ -360,7 +372,7 @@ const types = {
   ".html": "text/html",
   ".css": "text/css",
   ".js": "application/javascript",
-  ".mjs": "application/javascript",
+  ".mjs": "text/html",
   ".json": "application/json",
   ".png": "image/png",
   ".jpg": "image/jpeg",
