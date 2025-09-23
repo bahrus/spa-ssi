@@ -44,9 +44,11 @@ class SimpleHTTPRequestHandler {
           const includeMJSPath = `../../${parsedUrl.pathname}?v=${cnt++}`;
           const test = await import(includeMJSPath);
           if(test.render && typeof test.render === 'function'){
-            const renderedContent = test.render();
             res.writeHead(200, { "Content-Type": 'text/html' });
-            res.end(renderedContent);
+            //const renderedContent = test.render();
+            test.render(res.write);
+            res.end();
+            //res.end(renderedContent);
             return;
           }
       }
