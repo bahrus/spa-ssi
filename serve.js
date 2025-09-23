@@ -7,6 +7,8 @@ import path from "path";
 import url from "url";
 import net from "net";
 
+let cnt = 0;
+
 class SimpleHTTPRequestHandler {
   constructor(rootDir = process.cwd(), port = 8000) {
     this.rootDir = rootDir;
@@ -39,7 +41,7 @@ class SimpleHTTPRequestHandler {
       }
       //for now, assume all mjs comes from root directory
       if(parsedUrl.pathname?.endsWith('.mjs')){
-          const includeMJSPath = `../../${parsedUrl.pathname}`;
+          const includeMJSPath = `../../${parsedUrl.pathname}?v=${cnt++}`;
           const test = await import(includeMJSPath);
           if(test.render && typeof test.render === 'function'){
             const renderedContent = test.render();
