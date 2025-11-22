@@ -47,7 +47,7 @@ class SimpleHTTPRequestHandler {
             
             const renderedContent = test.render();
             const firstChar = renderedContent[0];
-            let mimeType = '';
+            let mimeType = 'text/plain';
             switch(firstChar){
               case '<':
                 mimeType = 'text/html';
