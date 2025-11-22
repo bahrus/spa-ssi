@@ -46,7 +46,18 @@ class SimpleHTTPRequestHandler {
           if(test.render && typeof test.render === 'function'){
             
             const renderedContent = test.render();
-            res.writeHead(200, { "Content-Type": 'text/html' });
+            const firstChar = renderedContent[0];
+            let mimeType = '';
+            switch(firstChar){
+              case '<':
+                mimeType = 'text/html';
+                break;
+              case '[':
+              case '{':
+                mimeType = 'application/json';
+                break;
+            }
+            res.writeHead(200, { "Content-Type":  mimeType});
             res.end(renderedContent);
             return;
           }
