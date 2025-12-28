@@ -71,10 +71,18 @@ class SimpleHTTPRequestHandler {
 
       // If directory, append index.html
       let stat;
+      let requestedDir = null;
       try {
         stat = await fs.stat(filepath);
         if (stat.isDirectory()) {
-          throw 'DoIndex';
+          //requestedDir = filepath;
+          const siteMapContent = await this.renderSiteMap(filepath);
+          // Send response
+          res.writeHead(200, { "Content-Type": 'text/html' });
+          res.end(siteMapContent);
+          return;
+          //filepath = path.join(filepath, "index.html");
+          //throw 'DoIndex';
           
         }
       } catch(e) {
@@ -93,7 +101,7 @@ class SimpleHTTPRequestHandler {
           filepath = path.join(this.rootDir, '/index.html'); //path.join(filepath, "index.html");
           stat = await fs.stat(filepath);
         }catch(e2){
-          const siteMapContent = await this.renderSiteMap();
+          const siteMapContent = await this.renderSiteMap(requestedDir);
           // Send response
           res.writeHead(200, { "Content-Type": 'text/html' });
           res.end(siteMapContent);
@@ -235,9 +243,9 @@ class SimpleHTTPRequestHandler {
     return html;
   }
 
-  async renderSiteMap(){
+  async renderSiteMap(dir = null){
     // Run it
-    const baseDir = process.cwd();
+    const baseDir = dir || process.cwd();
     const htmlFiles = await this.findHtmlFiles(baseDir);
     const htmlOutput = await this.buildHtmlList(htmlFiles, baseDir);
     const fullHTMLOutput = String.raw `
