@@ -75,6 +75,14 @@ class SimpleHTTPRequestHandler {
       try {
         stat = await fs.stat(filepath);
         if (stat.isDirectory()) {
+          // Redirect to a trailing slash so relative links in the listing
+          // resolve against the directory instead of its parent.
+          if (!parsedUrl.pathname.endsWith('/')) {
+            const location = parsedUrl.pathname + '/' + (parsedUrl.search || '');
+            res.writeHead(301, { "Location": location });
+            res.end();
+            return;
+          }
           //requestedDir = filepath;
           const siteMapContent = await this.renderSiteMap(filepath);
           // Send response
