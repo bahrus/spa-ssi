@@ -99,3 +99,5 @@ or:
 
 http://locahost:8000/sitemap lists all the html links within the site.
 
+A directory (e.g. http://localhost:8000/demo/store/) serves its own index.html, if it has one, with includes processed as for any page. Otherwise it lists the html links within that directory. The root directory works the same way, so a site with an index.html at its root shows that page at /, and /sitemap still lists everything.
+

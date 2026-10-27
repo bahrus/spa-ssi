@@ -83,15 +83,20 @@ class SimpleHTTPRequestHandler {
             res.end();
             return;
           }
-          //requestedDir = filepath;
-          const siteMapContent = await this.renderSiteMap(filepath);
-          // Send response
-          res.writeHead(200, { "Content-Type": 'text/html' });
-          res.end(siteMapContent);
-          return;
-          //filepath = path.join(filepath, "index.html");
-          //throw 'DoIndex';
-          
+          // The directory's own index.html, if it has one (served below, includes and all);
+          // otherwise its site map, as before
+          const indexPath = path.join(filepath, "index.html");
+          const indexStat = await fs.stat(indexPath).catch(() => null);
+          if (indexStat?.isFile()) {
+            filepath = indexPath;
+            stat = indexStat;
+          } else {
+            const siteMapContent = await this.renderSiteMap(filepath);
+            // Send response
+            res.writeHead(200, { "Content-Type": 'text/html' });
+            res.end(siteMapContent);
+            return;
+          }
         }
       } catch(e) {
         if(!filepath.endsWith(".html")){
