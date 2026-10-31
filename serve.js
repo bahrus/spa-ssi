@@ -111,7 +111,9 @@ class SimpleHTTPRequestHandler {
 
         }
         try{
-          filepath = path.join(this.rootDir, '/index.html'); //path.join(filepath, "index.html");
+          // SPA mode: the nearest ancestor directory's index.html (so an app in a subdirectory gets
+          // its own shell for deep links), ending with the root's
+          filepath = await this.nearestIndex(filepath);
           stat = await fs.stat(filepath);
         }catch(e2){
           const siteMapContent = await this.renderSiteMap(requestedDir);
@@ -155,6 +157,24 @@ class SimpleHTTPRequestHandler {
       res.writeHead(404, { "Content-Type": "text/plain" });
       res.end(`404 Not Found: ${JSON.stringify(err, null, 2)} \n`);
     }
+  }
+
+  /**
+   * The index.html of the nearest existing ancestor directory of a missing path, searching up to the
+   * root directory (never above it). The root's index.html when none is nearer, as before.
+   * @param {string} filepath
+   * @returns {Promise<string>}
+   */
+  async nearestIndex(filepath) {
+    const root = path.resolve(this.rootDir);
+    let dir = path.dirname(path.resolve(filepath));
+    while (dir.startsWith(root + path.sep)) {
+      const indexPath = path.join(dir, "index.html");
+      const indexStat = await fs.stat(indexPath).catch(() => null);
+      if (indexStat?.isFile()) return indexPath;
+      dir = path.dirname(dir);
+    }
+    return path.join(root, "index.html");
   }
 
   /**

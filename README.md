@@ -49,7 +49,9 @@ Along the lines of the previous section, if:
 
 ## Support for SPA
 
-If a page request doesn't resolve to a file, it defaults to /index.html
+If a page request doesn't resolve to a file, it is answered with the index.html of the nearest directory above it that has one, ending with /index.html. So an app in a subdirectory gets its own shell for deep links: with /demo/store/index.html, a request for /demo/store/products/3 is answered with that page, while /elsewhere/x still gets /index.html.
+
+Requests for missing files with a known extension (a .js, .css, image …) are 404s, not pages.
 
 ## HMR Support
 
